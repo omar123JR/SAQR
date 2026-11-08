@@ -1,25 +1,25 @@
 <p align="center">
-  <img src="files/saqr-logo.png" alt="SAQR Logo" width="230" />
-  <h1 align="center">🦅 صَقْر — SAQR</h1>
-  <h3 align="center">Security Automated Quick Response & Threat Intelligence Platform</h3>
-  <p align="center">
-    <b>منصة ذكية متكاملة للاستجابة الآلية للحوادث الأمنية بمركز عمليات مصغّر (Mini-SOC) ونواة استجابة حتمية (SOAR) مع طبقة ذكاء اصطناعي هجينة للتحليل وصياغة التقارير باللغة العربية.</b>
-  </p>
-  <p align="center">
-    <i>EDR-Grade Network Isolation · Volatile Memory Forensics (SHA-256) · Pluggable Local/Cloud AI · MITRE ATT&CK Mapping · Arabic Threat Reports</i>
-  </p>
+  <a href="#-quick-start">
+    <img src="files/saqr-banner.png" alt="SAQR OPS — Detect. Contain. Explain." width="780" />
+  </a>
 </p>
 
 <p align="center">
-  <a href="#-quick-start"><img src="https://img.shields.io/badge/Status-Active%20Development-success?style=for-the-badge&logo=git" alt="Status" /></a>
-  <a href="#-tech-stack"><img src="https://img.shields.io/badge/Architecture-Mini--SOC%20%2B%20SOAR-0f3460?style=for-the-badge&logo=shield" alt="Architecture" /></a>
-  <a href="#-benchmarks"><img src="https://img.shields.io/badge/Performance-MTTD%20%3C%202s%20%7C%20MTTC%20%3C%205s-e94560?style=for-the-badge&logo=speedtest" alt="Performance" /></a>
-  <a href="#-hybrid-ai"><img src="https://img.shields.io/badge/AI%20Layer-Pluggable%20(Ollama%20%2F%20Gemini)-00a896?style=for-the-badge&logo=openai" alt="AI Layer" /></a>
-  <a href="#-license"><img src="https://img.shields.io/badge/License-Academic%20Open%20Source-gold?style=for-the-badge" alt="License" /></a>
+  <a href="#-quick-start"><img src="https://img.shields.io/badge/Status-Active%20Development-00BCD4?style=for-the-badge&logo=git&logoColor=white" alt="Status" /></a>
+  <a href="#-tech-stack"><img src="https://img.shields.io/badge/Platform-Mini--SOC%20%2B%20SOAR-081528?style=for-the-badge&logo=shield&logoColor=00BCD4" alt="Platform" /></a>
+  <a href="#-benchmarks"><img src="https://img.shields.io/badge/Response-MTTC%20%3C%205s-f59e0b?style=for-the-badge&logo=speedtest&logoColor=white" alt="Response" /></a>
+  <a href="#-hybrid-ai"><img src="https://img.shields.io/badge/Hybrid%20AI-Ollama%20%7C%20Gemini-00BCD4?style=for-the-badge&logo=openai&logoColor=white" alt="AI Layer" /></a>
+  <a href="#-license"><img src="https://img.shields.io/badge/License-Academic%20Open%20Source-081528?style=for-the-badge" alt="License" /></a>
 </p>
 
 <p align="center">
-  <img src="files/saqr-banner.png" alt="SAQR Security Operations Platform Banner" width="100%" />
+  <b>منصة ذكية متكاملة للاستجابة الآلية للحوادث الأمنية بمركز عمليات مصغّر (Mini-SOC) ونواة استجابة حتمية (SOAR) مع طبقة ذكاء اصطناعي هجينة للتحليل وصياغة التقارير باللغة العربية.</b>
+</p>
+<p align="center">
+  <i>EDR-Grade Network Isolation · Volatile Memory Forensics (SHA-256) · Pluggable Local/Cloud AI · MITRE ATT&CK Mapping · Arabic Threat Reports</i>
+</p>
+<p align="center">
+  <code>DETECT</code> &nbsp;•&nbsp; <code>CONTAIN</code> &nbsp;•&nbsp; <code>EXPLAIN</code>
 </p>
 
 ---
@@ -339,6 +339,7 @@ saqr/
 * 📕 **[SAQR-Master-Plan.pdf](files/SAQR-Master-Plan.pdf):** خطة المشروع التنفيذية الكاملة المنسقة (24 صفحة) شاملة التفاصيل الهندسية وجداول المخاطر وخطوات كل أسبوع.
 * 📊 **[SAQR-Project-Explainer.pdf](files/SAQR-Project-Explainer.pdf):** العرض البصري التعريفي بالمنصة والقواعد الهندسية الذهبية.
 * 📝 **[Project_Proposal_SAQR.pdf](files/Proposal/Project_Proposal_SAQR%20(1).pdf):** المقترح الأكاديمي المبدئي لمشروع التخرج.
+* 🎨 **[Official Brand Assets](files/saqr-banner.png):** الهوية البصرية الرسمية للمنصة — [الشعار الكامل (Banner)](files/saqr-banner.png) | [أيقونة التطبيق (App Icon)](files/saqr-icon.png) | [رمز الشعار (Emblem)](files/saqr-logo.png).
 
 ---
 
