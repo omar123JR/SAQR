@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/omar123JR/SAQR/main/files/saqr-banner.png" alt="SAQR Logo" width="160" onerror="this.style.display='none'"/>
+  <img src="files/saqr-logo.png" alt="SAQR Logo" width="230" />
   <h1 align="center">🦅 صَقْر — SAQR</h1>
   <h3 align="center">Security Automated Quick Response & Threat Intelligence Platform</h3>
   <p align="center">
@@ -16,6 +16,10 @@
   <a href="#-benchmarks"><img src="https://img.shields.io/badge/Performance-MTTD%20%3C%202s%20%7C%20MTTC%20%3C%205s-e94560?style=for-the-badge&logo=speedtest" alt="Performance" /></a>
   <a href="#-hybrid-ai"><img src="https://img.shields.io/badge/AI%20Layer-Pluggable%20(Ollama%20%2F%20Gemini)-00a896?style=for-the-badge&logo=openai" alt="AI Layer" /></a>
   <a href="#-license"><img src="https://img.shields.io/badge/License-Academic%20Open%20Source-gold?style=for-the-badge" alt="License" /></a>
+</p>
+
+<p align="center">
+  <img src="files/saqr-banner.png" alt="SAQR Security Operations Platform Banner" width="100%" />
 </p>
 
 ---
