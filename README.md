@@ -77,46 +77,47 @@
 
 ```mermaid
 flowchart TB
-    subgraph L1 ["الطبقة 1: بيئة الضحية (Windows 10 Victim VM)"]
-        Honeypot["C:\\test-files (300 Honeypot Files)"]
-        Sysmon["Sysmon Driver (SwiftOnSecurity)"]
+    subgraph L1 ["الطبقة 1: بيئة الضحية - Windows 10 VM"]
+        Honeypot["C:/test-files - 300 Honeypot Files"]
+        Sysmon["Sysmon Driver - SwiftOnSecurity"]
         Agent["Wazuh EDR Agent"]
-        Honeypot -->|File Activity| Sysmon
-        Sysmon -->|Event Logs| Agent
+        Honeypot --> Sysmon
+        Sysmon --> Agent
     end
 
-    subgraph L2 ["الطبقة 2: خط الرصد المركزي (Detection Layer)"]
-        WManager["Wazuh Manager (Docker Container)"]
+    subgraph L2 ["الطبقة 2: خط الرصد المركزي - Detection Layer"]
+        WManager["Wazuh Manager - Docker Container"]
         Sigma["Sigma & Custom Detection Rules"]
-        Agent -->|Port 1514 (Encrypted Logs)| WManager
         WManager --> Sigma
     end
 
-    subgraph L3 ["الطبقة 3: محرك القرار الحتمي (Decision Engine)"]
-        FastAPI["FastAPI Orchestrator (:5000)"]
-        Correlator["Deterministic Correlator (Rules Engine)"]
-        DB[(PostgreSQL 16 Storage)]
-        Sigma -->|Webhook Alert (T1)| FastAPI
+    subgraph L3 ["الطبقة 3: محرك القرار الحتمي - Decision Engine"]
+        FastAPI["FastAPI Orchestrator - Port 5000"]
+        Correlator["Deterministic Correlator - Rules Engine"]
+        DB[("PostgreSQL 16 Storage")]
         FastAPI --> Correlator
-        Correlator -->|Record Timings T0..T4| DB
+        Correlator --> DB
     end
 
-    subgraph L4 ["الطبقة 4: الاستجابة وحفظ الأدلة (SOAR & Response)"]
-        ProcDump["Memory Dump (procdump.exe) + SHA-256"]
-        NetIso["Network Quarantine (Host Firewall)"]
-        Correlator -->|Execute T3| ProcDump
-        Correlator -->|Execute T4| NetIso
+    subgraph L4 ["الطبقة 4: الاستجابة وحفظ الأدلة - SOAR & Response"]
+        ProcDump["Memory Dump - SHA-256"]
+        NetIso["Network Quarantine - Host Firewall"]
     end
 
-    subgraph L5 ["الطبقة 5: الذكاء الاصطناعي والعرض (AI & Presentation)"]
-        LLM["Pluggable LLM Provider\n(Ollama Qwen2.5 / Gemini API)"]
-        Dash["Streamlit SOC Dashboard (:8501)"]
+    subgraph L5 ["الطبقة 5: الذكاء الاصطناعي والعرض - AI & Dashboards"]
+        LLM["Pluggable LLM Provider - Ollama / Gemini"]
+        Dash["Streamlit SOC Dashboard - Port 8501"]
         Bot["Telegram Alert Bot"]
-        Correlator -->|Trigger Post-Containment| LLM
-        LLM -->|Arabic Incident Report| Dash
-        Correlator -->|Instant Alert| Bot
-        DB --> Dash
     end
+
+    Agent -->|"Encrypted Logs - Port 1514"| WManager
+    Sigma -->|"Webhook Alert - T1"| FastAPI
+    Correlator -->|"Execute T3"| ProcDump
+    Correlator -->|"Execute T4"| NetIso
+    Correlator -->|"Post-Containment JSON"| LLM
+    Correlator -->|"Instant Alert"| Bot
+    LLM -->|"Arabic Threat Report"| Dash
+    DB --> Dash
 
     style L1 fill:#16213e,stroke:#0f3460,stroke-width:2px,color:#fff
     style L2 fill:#1a1a2e,stroke:#0f3460,stroke-width:2px,color:#fff
@@ -144,12 +145,12 @@ flowchart TB
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Attacker as محاكي الفدية (sim_ransom.py)
-    participant Victim as نظام الضحية (Sysmon)
+    actor Attacker as محاكي الفدية - sim_ransom
+    participant Victim as نظام الضحية - Sysmon
     participant Wazuh as خادم Wazuh Manager
-    participant Engine as محرك صَقْر (FastAPI)
-    participant Actions as أدوات الاستجابة (SOAR)
-    participant AI as الذكاء الاصطناعي (LLM)
+    participant Engine as محرك صقر - FastAPI
+    participant Actions as أدوات الاستجابة - SOAR
+    participant AI as الذكاء الاصطناعي - LLM
     participant SOC as لوحة التحكم و Telegram
 
     Attacker->>Victim: [T0] بدء تشفير الملفات ومحاولة حذف الظل
