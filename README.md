@@ -304,7 +304,7 @@ saqr/
 ├── deploy/
 │   └── docker-compose.yml          # حاويات Wazuh, Engine, DB, Dashboard
 ├── files/                          # الوثائق الرسمية والمقترحات المعتمدة
-│   ├── SAQR-Master-Plan.pdf        # خطة العمل الشاملة المعتمدة (24 صفحة)
+│   ├── SAQR-Master-Plan.pdf        # نسخة الخطة السابقة
 │   ├── SAQR-Project-Explainer.pdf  # العرض التقديمي الأولي للمشروع
 │   └── Proposal/
 │       └── Project_Proposal_SAQR (1).pdf # وثيقة مقترح التخرج المعتمدة
@@ -333,7 +333,7 @@ saqr/
 
 كافة وثائق المشروع الهندسية متاحة داخل مجلد `files/`:
 
-* 📕 **[SAQR-Complete-Plan.pdf](files/SAQR-Complete-Plan.pdf):** الخطة الشاملة بعد تحديث قرارات VMware وGemini API وTelegram، وتشمل المعمارية والتفاصيل الهندسية والاختبارات والجدول الزمني.\n* 📝 **[SAQR-Master-Plan.md](docs/SAQR-Master-Plan.md):** النسخة المصدرية القابلة للتحرير من الخطة المحدثة.\n* 📄 **[SAQR-Master-Plan.pdf](files/SAQR-Master-Plan.pdf):** نسخة سابقة محفوظة للأرشيف.
+* 📄 **[SAQR-Master-Plan.pdf](files/SAQR-Master-Plan.pdf):** نسخة الخطة السابقة الموجودة حالياً في المستودع. النسخة المحدّثة من الخطة مرفقة بشكل منفصل إلى حين رفعها إلى مجلد `files/`.
 * 📊 **[SAQR-Project-Explainer.pdf](files/SAQR-Project-Explainer.pdf):** العرض البصري التعريفي بالمنصة والقواعد الهندسية الذهبية.
 * 📝 **[Project_Proposal_SAQR.pdf](files/Proposal/Project_Proposal_SAQR%20(1).pdf):** المقترح الأكاديمي المبدئي لمشروع التخرج.
 * 🎨 **[Official Brand Assets](files/saqr-banner.png):** الهوية البصرية الرسمية للمنصة — [الشعار الكامل (Banner)](files/saqr-banner.png) | [أيقونة التطبيق (App Icon)](files/saqr-icon.png) | [رمز الشعار (Emblem)](files/saqr-logo.png).
