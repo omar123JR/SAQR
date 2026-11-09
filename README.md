@@ -370,6 +370,16 @@ saqr/
 
 تم تحديث الخطة بتاريخ **9 نوفمبر 2026**. تعتمد تسمية SAQR في وثيقة الخطة الأصلية على **Security Automated Query & Response**.
 
+## 🤝 Contributors
+
+| Contributor | GitHub | Contribution |
+|---|---|---|
+| **Sanad Eltaif** | [@sanad-eltaif](https://github.com/sanad-eltaif) | README documentation update, architecture alignment, and project-plan documentation |
+
+> GitHub also calculates the repository's contributor graph from commits authored by linked GitHub accounts. Documentation commits are authored using the connected `sanad-eltaif` account.
+
+---
+
 <p align="center">
   <b>صُمم وطُوّر بكل فخر كحل سيبراني دفاعي مفتوح المصدر 🦅</b>
   <br />
