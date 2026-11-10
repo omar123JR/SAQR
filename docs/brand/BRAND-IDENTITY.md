@@ -8,6 +8,8 @@
 > **Prepared:** 10 November 2026  
 > **Status:** Proposed visual system for the academic project and future product direction
 
+<p align="center"><img src="assets/saqr-primary.svg" alt="SAQR OPS transparent vector logo" width="920" /></p>
+
 ---
 
 ## 1. Purpose of this document
