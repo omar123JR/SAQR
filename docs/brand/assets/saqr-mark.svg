@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="280" viewBox="0 0 280 280" role="img" aria-labelledby="title desc">
+  <title id="title">SAQR geometric mark</title>
+  <desc id="desc">Geometric SAQR S mark, representing a detected event moving through an automated response path. The diamond marks the incident trigger.</desc>
+
+  <path d="M206 66 L162 40 H94 L50 66 V105 L128 150 L206 195 V234 L162 260 H94 L50 234"
+        fill="none" stroke="#081528" stroke-width="27" stroke-linecap="square" stroke-linejoin="bevel"/>
+  <path d="M89 103 L128 80 L184 113 V150 H205"
+        fill="none" stroke="#00BCD4" stroke-width="23" stroke-linecap="square" stroke-linejoin="bevel"/>
+  <path d="M180 125 L205 150 L180 175"
+        fill="none" stroke="#00BCD4" stroke-width="23" stroke-linecap="square" stroke-linejoin="bevel"/>
+  <path d="M128 130 L148 150 L128 170 L108 150 Z" fill="#F5A623"/>
+
+</svg>
