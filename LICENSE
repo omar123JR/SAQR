@@ -1,0 +1,44 @@
+SAQR
+PROPRIETARY SOFTWARE AND COPYRIGHT NOTICE
+ALL RIGHTS RESERVED
+
+Project: SAQR
+Full name: Security Automated Quick Response
+Copyright: © 2026 The five-member SAQR Project Team.
+
+OWNERSHIP
+
+The original materials in this repository that were created by the
+SAQR Project Team are jointly owned by the five team members, subject
+to each member's authorship and contribution rights and to applicable law.
+
+This notice does not transfer ownership of any member's work to another
+member. The team should execute the separate ownership agreement in
+docs/OWNERSHIP-AGREEMENT-DRAFT.md to document the members, contributions,
+approval process, and any agreed ownership shares.
+
+NO PUBLIC LICENSE GRANTED
+
+No open-source license or general permission to use this project is granted.
+Except for the limited rights necessarily provided by the GitHub platform
+and its applicable terms, no permission is granted to any third party to
+reproduce, modify, adapt, redistribute, sublicense, publish, or commercially
+exploit the team's original source code, documentation, architecture,
+designs, or other original materials without prior written permission
+from all rightsholders or their duly authorized representative.
+
+THIRD-PARTY MATERIALS
+
+Third-party libraries, tools, assets, and other materials remain subject
+to their own copyright notices and license terms. This notice does not
+claim ownership of third-party materials.
+
+NO WAIVER
+
+Making a repository or any part of it publicly accessible does not, by
+itself, grant a general license to reuse the team's original materials.
+This notice does not override GitHub's Terms of Service, platform
+permissions, or any rights that cannot be excluded under applicable law.
+
+For permission requests, contact the SAQR Project Team through the
+repository owner.
