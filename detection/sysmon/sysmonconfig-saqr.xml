@@ -1,0 +1,39 @@
+<Sysmon schemaversion="4.90">
+  <HashAlgorithms>sha256</HashAlgorithms>
+  <ArchiveDirectory>SysmonArchive</ArchiveDirectory>
+  <EventFiltering>
+    <!-- Event ID 1: Process Creation -->
+    <RuleGroup name="" groupRelation="or">
+      <ProcessCreate onmatch="exclude" />
+    </RuleGroup>
+
+    <!-- Event ID 11: File Create / Overwrite -->
+    <RuleGroup name="" groupRelation="or">
+      <FileCreate onmatch="include">
+        <TargetFilename condition="begin with">C:\test-files</TargetFilename>
+        <TargetFilename condition="begin with">C:\Users</TargetFilename>
+        <TargetFilename condition="end with">.exe</TargetFilename>
+        <TargetFilename condition="end with">.ps1</TargetFilename>
+        <TargetFilename condition="end with">.bat</TargetFilename>
+        <TargetFilename condition="end with">.vbs</TargetFilename>
+        <TargetFilename condition="end with">.dll</TargetFilename>
+      </FileCreate>
+    </RuleGroup>
+
+    <!-- Event ID 23: File Delete (with archive) -->
+    <RuleGroup name="" groupRelation="or">
+      <FileDelete onmatch="include">
+        <TargetFilename condition="begin with">C:\test-files</TargetFilename>
+        <TargetFilename condition="begin with">C:\Users</TargetFilename>
+      </FileDelete>
+    </RuleGroup>
+
+    <!-- Event ID 26: File Delete (without archive) -->
+    <RuleGroup name="" groupRelation="or">
+      <FileDeleteDetected onmatch="include">
+        <TargetFilename condition="begin with">C:\test-files</TargetFilename>
+        <TargetFilename condition="begin with">C:\Users</TargetFilename>
+      </FileDeleteDetected>
+    </RuleGroup>
+  </EventFiltering>
+</Sysmon>

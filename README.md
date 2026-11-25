@@ -370,6 +370,21 @@ saqr/
 
 ---
 
+## 🚀 سجل التنفيذ الفعلي (Implementation Log)
+
+### المرحلة 1: تجهيز بيئة الضحية والرصد (25 نوفمبر 2026) — مكتملة ✅
+تم تنفيذ وربط الطبقة الأولى والثانية من معمارية SAQR عملياً:
+- **خادم Wazuh (Docker `v4.7.4`)**: تشغيل حاويات `wazuh.manager` و`wazuh.indexer` و`wazuh.dashboard` مع ضبط بيانات الدخول إلى لوحة التحكم (`https://localhost`).
+- **ربط آلة الضحية (`win10-vm`)**: تثبيت **Wazuh Agent v4.7.4** على نظام `Windows 10 x64` في VMware Workstation (`192.168.126.141`) وربطه بـ Wazuh Manager عبر `192.168.126.1` (الحالة: **Active**، Agent ID `001`).
+- **تثبيت وتكوين Sysmon (`v15.22`)**: اعتماد ملف [sysmonconfig-saqr.xml](detection/sysmon/sysmonconfig-saqr.xml) لرصد الأحداث الأساسية والحرجة:
+  - `Event ID 1`: Process Creation (مع حساب هاش `SHA-256`).
+  - `Event ID 11`: File Create / Overwrite لمسارات `C:\test-files` و`C:\Users` والامتدادات التنفيذية.
+  - `Event ID 23`: File Delete مع الأرشفة في `C:\SysmonArchive` (بصلاحيات `NT AUTHORITY\SYSTEM` فقط).
+  - `Event ID 26`: File Delete بدون أرشفة.
+- **تهيئة Wazuh Agent المركزية وFIM**: تحديث [agent.conf](detection/wazuh/agent.conf) لسحب قناة `Microsoft-Windows-Sysmon/Operational` وتفعيل مراقبة الملفات الفورية (**Wazuh FIM**) على مجلد الـ Honeypot `C:\test-files`، مع التحقق من وصول تنبيهات Sysmon إلى `wazuh-alerts-*`.
+
+---
+
 ## 🧾 القرارات المعتمدة وتاريخ التحديث
 
 | العنصر | القرار الحالي |
