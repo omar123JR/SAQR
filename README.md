@@ -81,10 +81,8 @@
 ```mermaid
 flowchart TB
     subgraph L1 ["الطبقة 1: بيئة الضحية - Windows 10 VM"]
-        Honeypot["C:/test-files - 300 Honeypot Files"]
-        Sysmon["Sysmon Driver - SwiftOnSecurity"]
+        Sysmon["Sysmon Driver"]
         Agent["Wazuh EDR Agent"]
-        Honeypot --> Sysmon
         Sysmon --> Agent
     end
 
@@ -217,7 +215,7 @@ sequenceDiagram
 
 | السيناريو | المحاكاة | الرصد والتحليل | الاستجابة |
 |---|---|---|---|
-| 🔴 **هجوم برامج الفدية** (Ransomware Outbreak), نجم المشروع في الفصل الأول | تشفير ملفات Honeypot واستدعاء أدوات مثل `vssadmin` داخل الآلة التجريبية | مراقبة تغييرات الملفات وربط الأحداث المشبوهة عبر Sysmon وWazuh | جمع الأدلة، Process Dump، عزل الجهاز عبر جدار الحماية، وإعداد تقرير عربي |
+| 🔴 **هجوم برامج الفدية** (Ransomware Outbreak), نجم المشروع في الفصل الأول | تشفير الملفات داخل الآلة التجريبية واستدعاء أدوات مثل `vssadmin` | مراقبة تغييرات الملفات وربط الأحداث المشبوهة عبر Sysmon وWazuh | جمع الأدلة، Process Dump، عزل الجهاز عبر جدار الحماية، وإعداد تقرير عربي |
 | 🟡 **التصيد الاحتيالي المستهدف** (Targeted Phishing), الفصل الثاني | محاكاة رسائل تصيد عبر GoPhish وصفحات دخول مشابهة للمواقع الأصلية | رصد الاتصال بالنطاق المشبوه وتحليل مؤشرات التصيد | حظر النطاق أو الرابط المشبوه، وإلغاء الجلسات وفق التكاملات المعتمدة |
 | 🟠 **حجب الخدمة الموزع** (DDoS Flooding), الفصل الثاني | محاكاة ضغط مروري على خادم ويب تجريبي داخل المختبر | تحليل حركة المرور والتمييز بين الهجوم والارتفاع الطبيعي في الاستخدام | تطبيق Rate Limiting وحظر عناوين IP المهاجمة وفق قواعد الاستجابة |
 
@@ -325,7 +323,7 @@ saqr/
 │   ├── vms/                        # إعدادات وسكريبتات الآلات الافتراضية
 │   └── attack-engine/
 │       └── ransomware-sim/
-│           └── sim_ransom.py       # محاكي الفدية الآمن داخل Honeypot
+│           └── sim_ransom.py       # محاكي الفدية الآمن داخل بيئة الاختبار
 ├── detection/                      # إعدادات الرصد وقواعد الكشف
 │   ├── sysmon/                     # تكوين Sysmon لمراقبة العمليات
 │   └── wazuh/rules/                # قواعد الكشف السلوكي الخاصة بصقر
@@ -378,10 +376,10 @@ saqr/
 - **ربط آلة الضحية (`win10-vm`)**: تثبيت **Wazuh Agent v4.7.4** على نظام `Windows 10 x64` في VMware Workstation (`192.168.126.141`) وربطه بـ Wazuh Manager عبر `192.168.126.1` (الحالة: **Active**، Agent ID `001`).
 - **تثبيت وتكوين Sysmon (`v15.22`)**: اعتماد ملف [sysmonconfig-saqr.xml](detection/sysmon/sysmonconfig-saqr.xml) لرصد الأحداث الأساسية والحرجة:
   - `Event ID 1`: Process Creation (مع حساب هاش `SHA-256`).
-  - `Event ID 11`: File Create / Overwrite لمسارات `C:\test-files` و`C:\Users` والامتدادات التنفيذية.
+  - `Event ID 11`: File Create / Overwrite لمسارات `C:\Users` والامتدادات التنفيذية.
   - `Event ID 23`: File Delete مع الأرشفة في `C:\SysmonArchive` (بصلاحيات `NT AUTHORITY\SYSTEM` فقط).
   - `Event ID 26`: File Delete بدون أرشفة.
-- **تهيئة Wazuh Agent المركزية وFIM**: تحديث [agent.conf](detection/wazuh/agent.conf) لسحب قناة `Microsoft-Windows-Sysmon/Operational` وتفعيل مراقبة الملفات الفورية (**Wazuh FIM**) على مجلد الـ Honeypot `C:\test-files`، مع التحقق من وصول تنبيهات Sysmon إلى `wazuh-alerts-*`.
+- **تهيئة Wazuh Agent المركزية وFIM**: تحديث [agent.conf](detection/wazuh/agent.conf) لسحب قناة `Microsoft-Windows-Sysmon/Operational` وتفعيل مراقبة الملفات الفورية (**Wazuh FIM**) على مجلد المستخدمين `C:\Users`، مع التحقق من وصول تنبيهات Sysmon إلى `wazuh-alerts-*`.
 
 ---
 
