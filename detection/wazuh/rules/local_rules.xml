@@ -1,0 +1,141 @@
+<!--
+  SAQR Native Wazuh v4.14.11 Detection Rules (IDs 100200 - 100207)
+  ================================================================
+  Mounted at: /var/ossec/etc/rules/local_rules.xml on wazuh.manager
+
+  Deterministic MITRE ATT&CK Coverage:
+    - 100200 (lvl  3): Protected-folder Sysmon EID 11/26 base event (T1486)
+    - 100201 (lvl 12): Ransomware File Burst >=15 ops in 5s per PID (T1486)
+    - 100202 (lvl 12): Shadow Copy / Recovery Inhibition (T1490)
+    - 100203 (lvl 12): In-Place FIM whodata Burst >=15 ops in 5s per PID (T1486)
+    - 100204 (lvl 10): Outbound SMB TCP/445 Lateral Movement (T1021.002)
+    - 100205 (lvl 12): Suspicious / Punycode Phishing DNS Query (T1566.002)
+    - 100206 (lvl 12): Web / Suricata DDoS Flood Threshold (T1498, T1499)
+    - 100207 (lvl 12): Fileless PowerShell EID 4104 Shadow Copy Delete (T1490)
+
+  All level >= 10 alerts are forwarded in <200ms via custom-saqr.py to the
+  SAQR FastAPI Decision Engine (:5000) with HMAC-SHA256 authentication.
+-->
+<group name="saqr,windows,sysmon,">
+  <!--
+    Rule 100200: Base event for Sysmon EID 11 (FileCreate) & EID 26 (FileDeleteDetected).
+    IMPORTANT: level MUST be > 0 (level="3" here). In Wazuh analysisd, level="0"
+    events are immediately discarded and NEVER enter the correlation cache, which
+    would silently prevent rule 100201's <if_matched_sid>100200</if_matched_sid>
+    from ever firing!
+  -->
+  <rule id="100200" level="3">
+    <if_group>sysmon</if_group>
+    <field name="win.system.eventID" type="pcre2">^(11|26)$</field>
+    <field name="win.eventdata.targetFilename" type="pcre2">(?i)^(C:\\Users\\[^\\]+\\(Desktop|Documents|Downloads)\\|C:\\SAQR-Test\\)</field>
+    <field name="win.eventdata.targetFilename" negate="yes" type="pcre2">(?i)(\\\.git\\|\\~\$|\.tmp$)</field>
+    <description>SAQR: File created or deleted in protected folder ($(win.eventdata.targetFilename))</description>
+    <mitre>
+      <id>T1486</id>
+    </mitre>
+  </rule>
+
+  <!--
+    Rule 100201: Per-PID Ransomware File Burst (Scenario 1 — Fast / Shadowless).
+    Correlates 15+ file creates/deletes by the SAME processId within 5 seconds so
+    normal concurrent user activity across different apps does not cross-trigger.
+  -->
+  <rule id="100201" level="12" frequency="15" timeframe="5">
+    <if_matched_sid>100200</if_matched_sid>
+    <same_field>win.eventdata.processId</same_field>
+    <description>SAQR CRITICAL: Ransomware file burst detected (15+ create/delete ops in 5s by PID $(win.eventdata.processId))</description>
+    <mitre>
+      <id>T1486</id>
+    </mitre>
+  </rule>
+
+  <!--
+    Rule 100202: Volume Shadow Copy / Recovery Inhibition (Scenario 1 — Pre-Encryption).
+    Detects vssadmin, wmic shadowcopy, wbadmin, bcdedit recovery disable, and
+    PowerShell Win32_ShadowCopy deletion commands immediately on execution.
+  -->
+  <rule id="100202" level="12">
+    <if_group>sysmon</if_group>
+    <field name="win.system.eventID">^1$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(vssadmin(\.exe)?\s+(delete\s+shadows|resize\s+shadowstorage)|wmic(\.exe)?\s+shadowcopy\s+delete|wbadmin(\.exe)?\s+delete\s+(catalog|backup|systemstatebackup)|bcdedit(\.exe)?\s+/set\s+.*(recoveryenabled\s+no|bootstatuspolicy\s+ignoreallfailures)|Win32_ShadowCopy.*Delete)</field>
+    <description>SAQR CRITICAL: Shadow copy or system recovery inhibition detected ($(win.eventdata.image))</description>
+    <mitre>
+      <id>T1490</id>
+    </mitre>
+  </rule>
+
+  <!--
+    Rule 100203: In-Place Ransomware Overwrite/Rename Burst via FIM whodata.
+    Closes the classic Sysmon blind spot where stealth ransomware opens existing
+    files with r+b and overwrites them in place without firing EID 11 or EID 26.
+  -->
+  <rule id="100203" level="12" frequency="15" timeframe="5">
+    <if_matched_group>syscheck</if_matched_group>
+    <same_field>syscheck.audit.process.id</same_field>
+    <description>SAQR CRITICAL: In-place ransomware FIM whodata burst detected (15+ ops in 5s by PID $(syscheck.audit.process.id))</description>
+    <mitre>
+      <id>T1486</id>
+    </mitre>
+  </rule>
+
+  <!--
+    Rule 100204: Outbound SMB TCP/445 Lateral Movement (Scenario 1 — Canary Spread).
+    Flags initiated outbound SMB connections so the engine can elevate risk and
+    correlate ransomware attempting to encrypt network shares (e.g., Samba canary).
+  -->
+  <rule id="100204" level="10">
+    <if_group>sysmon</if_group>
+    <field name="win.system.eventID">^3$</field>
+    <field name="win.eventdata.destinationPort">^445$</field>
+    <field name="win.eventdata.initiated">^true$</field>
+    <description>SAQR HIGH: Outbound SMB (TCP/445) lateral movement attempt by $(win.eventdata.image) to $(win.eventdata.destinationIp)</description>
+    <mitre>
+      <id>T1021.002</id>
+    </mitre>
+  </rule>
+
+  <!--
+    Rule 100205: Suspicious / Punycode Phishing DNS Query (Scenario 2 — Phishing).
+    Flags IDN punycode domains and lookalike spoofs of protected Libyan
+    organization domains configured in SAQR.
+  -->
+  <rule id="100205" level="12">
+    <if_group>sysmon</if_group>
+    <field name="win.system.eventID">^22$</field>
+    <field name="win.eventdata.queryName" type="pcre2">(?i)(^|\.)xn--|(saqr-b[a4]nk|m[i1]n[i1]stry-he[a4]lth|s[a4]r[a4]y[a4]).*(login|verify|secure|auth|portal)|(login|verify|secure|update)-(saqr|bank|saraya|ministry)</field>
+    <description>SAQR CRITICAL: Suspicious or Punycode phishing DNS query detected ($(win.eventdata.queryName))</description>
+    <mitre>
+      <id>T1566.002</id>
+    </mitre>
+  </rule>
+
+  <!--
+    Rule 100206: Web / Suricata DDoS Flood Threshold (Scenario 3 — DDoS).
+    Triggers when a single source IP exceeds 50 web/IDS events inside 10 seconds,
+    enabling selective IP blocking without disrupting legitimate users.
+  -->
+  <rule id="100206" level="12" frequency="50" timeframe="10">
+    <if_matched_group>web|ids</if_matched_group>
+    <same_source_ip />
+    <description>SAQR CRITICAL: Web/IDS DDoS flood threshold exceeded (50+ requests in 10s from $(srcip))</description>
+    <mitre>
+      <id>T1498</id>
+      <id>T1499</id>
+    </mitre>
+  </rule>
+
+  <!--
+    Rule 100207: Fileless PowerShell Shadow Copy Deletion (Event ID 4104).
+    Paired with Microsoft-Windows-PowerShell/Operational in agent.conf to catch
+    in-memory WMI/CIM Win32_ShadowCopy deletion without spawning vssadmin.exe.
+  -->
+  <rule id="100207" level="12">
+    <if_group>windows</if_group>
+    <field name="win.system.eventID">^4104$</field>
+    <field name="win.eventdata.scriptBlockText" type="pcre2">(?i)(Win32_ShadowCopy.*Delete|Get-WmiObject\s+.*Win32_ShadowCopy|Get-CimInstance\s+.*Win32_ShadowCopy|vssadmin(\.exe)?\s+delete\s+shadows)</field>
+    <description>SAQR CRITICAL: Fileless PowerShell shadow copy deletion script block detected (EID 4104)</description>
+    <mitre>
+      <id>T1490</id>
+    </mitre>
+  </rule>
+</group>

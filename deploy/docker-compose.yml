@@ -1,0 +1,155 @@
+services:
+  # ==========================================================================
+  # Layer 2: Wazuh Manager v4.14.11 (Patches CVE-2025-24016 & CVE-2026-40106)
+  # Runs lean (~1-1.5GB RAM) without needing OpenSearch during demos/benchmarks
+  # ==========================================================================
+  wazuh.manager:
+    image: wazuh/wazuh-manager:4.14.11
+    container_name: saqr-wazuh-manager
+    restart: unless-stopped
+    mem_limit: 1536m
+    environment:
+      SAQR_WEBHOOK_SECRET: ${SAQR_WEBHOOK_SECRET}
+    ports:
+      - "1514:1514"              # Wazuh Agent telemetry & Active Response channel
+      - "1515:1515"              # Wazuh Agent enrollment
+      - "127.0.0.1:55000:55000"  # Wazuh Manager REST API
+    volumes:
+      - ./wazuh/ossec.conf:/var/ossec/etc/ossec.conf:ro
+      - ../detection/wazuh/rules/local_rules.xml:/var/ossec/etc/rules/local_rules.xml:ro
+      - ../detection/wazuh/agent.conf:/var/ossec/etc/shared/default/agent.conf:ro
+      - ../detection/wazuh/integrations/custom-saqr.py:/var/ossec/integrations/custom-saqr.py:ro
+      - wazuh_var:/var/ossec/queue
+    networks:
+      - saqr-net
+
+  # Optional Debug UI (Indexer + Dashboard) — OFF by default to save 3-4GB RAM on 16GB laptops!
+  # Turn ON only while inspecting raw Sysmon fields & writing rules:
+  #   docker compose --profile debug-ui up -d
+  wazuh.indexer:
+    image: wazuh/wazuh-indexer:4.14.11
+    container_name: saqr-wazuh-indexer
+    profiles: ["debug-ui"]
+    mem_limit: 2048m
+    environment:
+      OPENSEARCH_JAVA_OPTS: "-Xms1g -Xmx1g"
+    networks:
+      - saqr-net
+
+  wazuh.dashboard:
+    image: wazuh/wazuh-dashboard:4.14.11
+    container_name: saqr-wazuh-dashboard
+    profiles: ["debug-ui"]
+    mem_limit: 768m
+    ports:
+      - "127.0.0.1:443:5601"
+    depends_on:
+      - wazuh.indexer
+    networks:
+      - saqr-net
+
+  # ==========================================================================
+  # Layer 3: Deterministic Decision Engine (FastAPI :5000) + PostgreSQL 16
+  # ==========================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: saqr-postgres
+    restart: unless-stopped
+    mem_limit: 512m
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-saqr}
+      POSTGRES_USER: ${POSTGRES_USER:-saqr}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ChangeMePostgres2026}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../engine/db/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-saqr} -d ${POSTGRES_DB:-saqr}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - saqr-net
+
+  saqr-engine:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.engine
+    container_name: saqr-engine
+    restart: unless-stopped
+    mem_limit: 512m
+    env_file:
+      - ../.env
+    environment:
+      SAQR_EVIDENCE_DIR: /data/evidence
+    ports:
+      - "5000:5000"  # Receives Wazuh webhooks + Win10 evidence uploads (bind to Host-Only IP in lab)
+    volumes:
+      - saqr_evidence:/data/evidence
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - saqr-net
+
+  # ==========================================================================
+  # Layer 5: Streamlit RTL SOC Dashboard (:8501) + Optional Local LLM (Ollama)
+  # ==========================================================================
+  saqr-dashboard:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.dashboard
+    container_name: saqr-dashboard
+    restart: unless-stopped
+    mem_limit: 512m
+    environment:
+      SAQR_ENGINE_URL: http://saqr-engine:5000
+      SAQR_ANALYST_PASSWORD: ${SAQR_ANALYST_PASSWORD}
+      SAQR_METRICS_CSV: /app/metrics_output/trials_20.csv
+    volumes:
+      - ../metrics_output:/app/metrics_output:ro
+    ports:
+      - "127.0.0.1:8501:8501"
+    depends_on:
+      - saqr-engine
+    networks:
+      - saqr-net
+
+  # Optional Local LLM fulfilling signed Proposal Objective #3 (100% offline):
+  #   docker compose --profile local-llm up -d
+  #   docker exec saqr-ollama ollama pull qwen2.5:7b-instruct-q4_K_M
+  ollama:
+    image: ollama/ollama:latest
+    container_name: saqr-ollama
+    profiles: ["local-llm"]
+    mem_limit: 6144m
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    networks:
+      - saqr-net
+
+  # Optional Ultra-Light Samba Canary (<64MB RAM) proving non-vacuous "0 lateral spread":
+  #   Set SAQR_CANARY_BIND=192.168.56.1:445 in .env for native Windows SMB access on Host-Only NIC.
+  #   docker compose --profile canary up -d
+  samba-canary:
+    build:
+      context: ../lab/vms/samba-canary
+    container_name: saqr-samba-canary
+    profiles: ["canary"]
+    mem_limit: 128m
+    ports:
+      - "${SAQR_CANARY_BIND:-127.0.0.1:4455}:445"
+    networks:
+      - saqr-net
+
+networks:
+  saqr-net:
+    driver: bridge
+
+volumes:
+  wazuh_var:
+  postgres_data:
+  saqr_evidence:
+  ollama_models:

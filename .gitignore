@@ -1,17 +1,39 @@
-﻿# Windows
-Thumbs.db
-Desktop.ini
-$RECYCLE.BIN/
+# Secrets & Local State
+.env
+.env.*
+!.env.example
+*.db
+*.db-wal
+*.db-shm
+*.key
+*.pem
 
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
-.env
 .venv/
-env/
 venv/
+env/
+.pytest_cache/
 
-# IDE
+# Forensic Dumps, Logs, Docker Volumes & VM Files
+*.dmp
+*.mem
+*.pcap
+*.log
+evidence_vault/
+postgres_data/
+metrics_output/
+*.vmdk
+*.vmem
+*.vmss
+*.vmsn
+
+# Windows / macOS / IDE
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
 .vscode/
 .idea/
