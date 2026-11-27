@@ -1,21 +1,21 @@
 <p align="center">
-  <a href="#-متطلبات-البيئة-والموارد-المقترحة">
+  <a href="#-التشغيل-السريع-quickstart">
     <img src="files/saqr-banner.png" alt="SAQR OPS — Detect. Contain. Explain." width="780" />
   </a>
 </p>
 
 <p align="center">
-  <a href="#-تشغيل-المنظومة"><img src="https://img.shields.io/badge/Status-Active%20Development-00BCD4?style=for-the-badge&logo=git&logoColor=white" alt="Status" /></a>
-  <a href="#-tech-stack"><img src="https://img.shields.io/badge/Platform-Mini--SOC%20%2B%20SOAR-081528?style=for-the-badge&logo=shield&logoColor=00BCD4" alt="Platform" /></a>
-  <a href="#-gemini-api-only-التقارير-الذكية"><img src="https://img.shields.io/badge/AI-Gemini%20API%20Only-00BCD4?style=for-the-badge&logo=google&logoColor=white" alt="AI Layer" /></a>
-  <a href="#-القرارات-المعتمدة-وتاريخ-التحديث"><img src="https://img.shields.io/badge/Project-Private%20Academic%20Project-081528?style=for-the-badge" alt="Private Academic Project" /></a>
+  <a href="#-التشغيل-السريع-quickstart"><img src="https://img.shields.io/badge/Status-Full%20Stack%20Implemented-00BCD4?style=for-the-badge&logo=git&logoColor=white" alt="Status" /></a>
+  <a href="#-المعمارية-خماسية-الطبقات"><img src="https://img.shields.io/badge/Platform-Mini--SOC%20%2B%20SOAR-081528?style=for-the-badge&logo=shield&logoColor=00BCD4" alt="Platform" /></a>
+  <a href="#-طبقة-التقارير-العربية-الذكية-gemini-api--local-ollama"><img src="https://img.shields.io/badge/AI-Gemini%20API%20%2F%20Ollama%20Qwen2.5-00BCD4?style=for-the-badge&logo=google&logoColor=white" alt="AI Layer" /></a>
+  <a href="#-وثائق-المشروع-والمرفقات"><img src="https://img.shields.io/badge/Wazuh-v4.14.11%20Hardened-081528?style=for-the-badge&logo=linux&logoColor=00BCD4" alt="Wazuh v4.14.11" /></a>
 </p>
 
 <p align="center">
-  <b>منصة ذكية متكاملة للاستجابة الآلية للحوادث الأمنية بمركز عمليات مصغّر (Mini-SOC) ونواة استجابة حتمية (SOAR) مع طبقة تقارير ذكية تعتمد على Gemini API بعد تنفيذ الاستجابة الحتمية.</b>
+  <b>منصة ذكية متكاملة للاستجابة الآلية للحوادث الأمنية بمركز عمليات مصغّر (Mini-SOC) ونواة استجابة حتمية (SOAR) مع طبقة تقارير عربية ذكية تعمل بعد اكتمال الاحتواء الحتمي.</b>
 </p>
 <p align="center">
-  <i>EDR-Grade Network Isolation · Volatile Memory Forensics (SHA-256) · Gemini API Reporting Only · MITRE ATT&CK Mapping · Arabic Threat Reports</i>
+  <i>Race-Free Containment · Volatile Memory Forensics (SHA-256) · Gemini API &amp; Local Ollama (Qwen2.5) · Deterministic MITRE ATT&amp;CK · Arabic RTL Dashboard</i>
 </p>
 <p align="center">
   <code>DETECT</code> &nbsp;•&nbsp; <code>CONTAIN</code> &nbsp;•&nbsp; <code>EXPLAIN</code>
@@ -23,377 +23,170 @@
 
 ---
 
-## 📑 فهرس المحتويات (Table of Contents)
-
-1. [نظرة عامة والمشكلة التي نحلها](#-نظرة-عامة-والمشكلة-التي-نحلها)
-2. [مصفوفة المقارنة](#-لماذا-صقر--مصفوفة-المقارنة)
-3. [المعمارية خماسية الطبقات](#-المعمارية-خماسية-الطبقات)
-4. [تسلسل الاستجابة](#-تسلسل-الاستجابة-الحتمي)
-5. [Gemini API حصرياً للتقارير الذكية](#-gemini-api-only-التقارير-الذكية)
-6. [التقنيات المعتمدة](#-التقنيات-المعتمدة-tech-stack)
-7. [السيناريوهات الدفاعية](#-السيناريوهات-الدفاعية-المدعومة)
-8. [متطلبات البيئة والموارد المقترحة](#-متطلبات-البيئة-والموارد-المقترحة)
-9. [التقييم والتجارب الـ20](#-بروتوكول-التجارب-الـ-20-والتقييم-العلمي)
-10. [هيكل المستودع](#-هيكل-المستودع-monorepo)
-11. [الوثائق والمرفقات](#-وثائق-المشروع-والمرفقات)
-12. [فريق العمل](#-فريق-العمل-والأدوار-الهندسية)
-13. [القرارات المعتمدة](#-القرارات-المعتمدة-وتاريخ-التحديث)
+> [!IMPORTANT]
+> **القاعدة الذهبية لمنظومة صَقْر (The Golden Rule):**  
+> الكشف والربط والاحتواء وحفظ الأدلة الجنائية (`SHA-256`) تُنفّذ **بقواعد حتمية 100%** دون انتظار أو تدخل الذكاء الاصطناعي؛ يعمل النموذج اللغوي (**Gemini API** أو **Local Ollama Qwen2.5** أو القالب العربي الاحتياطي دون إنترنت) **بعد اكتمال الاحتواء فقط** مع تنقيح إلزامي للبيانات الحساسة (**PII Redaction**).
 
 ---
 
-## 📌 نظرة عامة والمشكلة التي نحلها
-
-تعاني معظم المؤسسات المتوسطة والحكومية والقطاعات الحساسة (كالمصارف والمستشفيات) محلياً وإقليمياً من:
-1. **شُح الكوادر الأمنية المتخصصة:** غياب فرق SOC و Incident Response مكرسة تعمل على مدار الساعة.
-2. **الانتشار الكارثي للهجمات:** هجمات الفدية (Ransomware) قد تنتشر أفقياً عبر بروتوكولات الشبكة (مثل SMB) قبل اكتشافها.
-3. **فقدان الأدلة الجنائية:** عند حدوث الاختراق، يتم فصل الأجهزة أو إعادة تشغيلها عشوائياً، مما يمحو الذاكرة المؤقتة (Volatile Memory) وآثار الجريمة.
-4. **عزلة الحلول التجارية:** منصات SIEM و SOAR العالمية (مثل Splunk Phantom أو Cortex XSOAR) باهظة التكاليف، سحابية بالكامل وتتعارض مع قوانين سرية البيانات المحلية، ولا تدعم اللغة العربية.
-
-### 💡 حل منصة صَقْر (SAQR Solution):
-منصة دفاعية متكاملة مغلقة المصدر تجمع بين قدرات الـ **Mini-SOC** والمحاكاة والاستجابة الآلية **SOAR**:
-* ⚡ **استجابة آلية بقواعد محددة:** عزل الجهاز على مستوى جدار الحماية عند تحقق شروط الكشف المعتمدة، دون انتظار تدخل المحلل.
-* 🛡️ **حفظ الأدلة الجنائية لحظياً:** التقاط تفريغ للذاكرة (Process Dump) وتوقيعه بهاش `SHA-256` قبل إنهاء العملية الخبيثة.
-* 🤖 **تقارير Gemini API:** استخدام Gemini API لصياغة تحليل وتقرير عربي بعد انتهاء الاحتواء؛ لا يملك النموذج صلاحية اتخاذ قرار العزل أو تنفيذ أوامر.
-* 🎯 **تكلفة واضحة:** تعتمد المنظومة على أدوات وتقنيات متاحة للاستخدام الأكاديمي، مع احتمال وجود تكلفة لاستخدام Gemini API حسب الخطة المتاحة وقت التنفيذ.
-
----
-
-## ⚡ لماذا صَقْر؟ — مصفوفة المقارنة
-
-يعرض الجدول التالي أهداف التصميم المراد قياسها، وليس نتائج تجارب مكتملة:
-
-| وجه المقارنة | الاستجابة التقليدية اليدوية | حلول SOAR التجارية | هدف SAQR في المختبر |
-| :--- | :---: | :---: | :---: |
-| **زمن الكشف (MTTD)** | يعتمد على المحلل | يعتمد على التهيئة | **يسجل بعد تنفيذ التجارب** |
-| **زمن الاحتواء (MTTC)** | يتطلب تدخلاً يدوياً | يعتمد على الـ Playbook | **يسجل بعد تنفيذ التجارب** |
-| **الملفات المتأثرة** | يختلف باختلاف الهجوم | يختلف باختلاف التهيئة | **قياس العدد قبل اكتمال العزل** |
-| **الأدلة الجنائية** | قد تضيع عند إعادة التشغيل | تتطلب تهيئة وتكاملات | **جمع أدلة موثق مع SHA-256** |
-| **العمل عند انقطاع الإنترنت** | يختلف حسب الأدوات | قد يتأثر بالخدمات السحابية | **الكشف والاحتواء محليان؛ تقارير Gemini والإشعارات تتأجل** |
-| **التقارير العربية** | غالباً يدوية | بحسب المنتج والتكامل | **تقرير عربي بمساعدة Gemini API** |
-| **التكلفة** | موارد بشرية وتشغيلية | تراخيص وخدمات | **أدوات وتقنيات متاحة مع احتمال تكلفة API** |
-
----
-
-## 🏛️ المعمارية خماسية الطبقات
-
-تم تصميم النظام على شكل معمارية معيارية متعددة الطبقات (Layered Modular Architecture) تضمن استقلالية خط الرصد عن محرك القرار وعن طبقة الذكاء الاصطناعي:
+## 🏛️ المعمارية خماسية الطبقات (متوافقة 100% مع المقترح المعتمد)
 
 ```mermaid
 flowchart TB
-    subgraph L1 ["الطبقة 1: بيئة الضحية - Windows 10 VM"]
-        Sysmon["Sysmon Driver"]
-        Agent["Wazuh EDR Agent"]
-        Sysmon --> Agent
+    subgraph L1["الطبقة 1: بيئة الضحية المعزولة (VMware Win10 VM)"]
+        SYS["Sysmon v15.22 (EID 1, 3, 11, 22, 26)"]
+        WA["Wazuh Agent v4.14.11 (EventChannel + Scoped FIM whodata)"]
+        AR["Wazuh Active Response: saqr_contain.py (Freeze -> Firewall -> Dump SHA-256 -> Kill)"]
+        SYS --> WA
     end
 
-    subgraph L2 ["الطبقة 2: خط الرصد المركزي - Detection Layer"]
-        WManager["Wazuh Manager - Docker Container"]
-        Sigma["Sigma & Custom Detection Rules"]
-        WManager --> Sigma
+    subgraph L2["الطبقة 2: خط الرصد المركزي (Docker)"]
+        WM["Wazuh Manager v4.14.11 (local_rules.xml 100200-100207 + MITRE + integratord)"]
+        WUI["Wazuh Indexer + Dashboard (اختياري: --profile debug-ui)"]
     end
 
-    subgraph L3 ["الطبقة 3: محرك القرار الحتمي - Decision Engine"]
-        FastAPI["FastAPI Orchestrator - Port 5000"]
-        Correlator["Deterministic Correlator - Rules Engine"]
-        DB[("PostgreSQL 16 Storage")]
-        FastAPI --> Correlator
-        Correlator --> DB
+    subgraph L3["الطبقة 3: محرك القرار الحتمي (FastAPI :5000)"]
+        API["FastAPI Core (HMAC Anti-Replay + Idempotency Lock + T0..T4)"]
+        PG[("PostgreSQL 16 (Incidents, Artifacts, Outbox, IAM)")]
+        API --> PG
     end
 
-    subgraph L4 ["الطبقة 4: الاستجابة وحفظ الأدلة - SOAR & Response"]
-        ProcDump["Memory Dump - SHA-256"]
-        NetIso["Network Quarantine - Host Firewall"]
+    subgraph L5["الطبقة 5: الذكاء الاصطناعي ولوحة التحكم"]
+        RED["PII Redactor -> Gemini API / Local Ollama Qwen2.5 / Offline Fallback"]
+        ST["Streamlit RTL SOC Dashboard (:8501)"]
+        TG["Telegram Bot (Outbox Retry Queue)"]
+        RED --> PG
+        PG --> ST
     end
 
-    subgraph L5 ["الطبقة 5: الذكاء الاصطناعي والعرض - AI & Dashboards"]
-        LLM["Gemini API - Arabic Report Only"]
-        Dash["Streamlit SOC Dashboard - Port 8501"]
-        Bot["Telegram Alert Bot"]
-    end
-
-    Agent -->|"Encrypted Logs - Port 1514"| WManager
-    Sigma -->|"Webhook Alert - T1"| FastAPI
-    Correlator -->|"Execute T3"| ProcDump
-    Correlator -->|"Execute T4"| NetIso
-    Correlator -->|"Post-Containment JSON"| LLM
-    Correlator -->|"Instant Alert"| Bot
-    LLM -->|"Arabic Threat Report"| Dash
-    DB --> Dash
-
-    style L1 fill:#16213e,stroke:#0f3460,stroke-width:2px,color:#fff
-    style L2 fill:#1a1a2e,stroke:#0f3460,stroke-width:2px,color:#fff
-    style L3 fill:#0f3460,stroke:#e94560,stroke-width:2px,color:#fff
-    style L4 fill:#533483,stroke:#e94560,stroke-width:2px,color:#fff
-    style L5 fill:#00a896,stroke:#028090,stroke-width:2px,color:#fff
-```
-
-### تفاصيل الطبقات المعمارية:
-1. **الطبقة 1 — بيئة الضحية المعزولة (Victim Environment):** آلة افتراضية Windows 10 معزولة على محول شبكة داخلي (VMware Workstation isolated VMnet)، مثبت عليها Sysmon بمخطط متقدم لمراقبة سلوك العمليات والملفات.
-2. **الطبقة 2 — خط الرصد والتحليل (Detection Engine):** حاوية `wazuh-manager` الخفيفة المخصصة، تطبق قواعد Sigma وقواعد كشف مخصصة لاصطياد سلوك الفدية (مثل تكرار إعادة تسمية عدد كبير من الملفات واستدعاء `vssadmin`).
-3. **الطبقة 3 — محرك القرار الحتمي (FastAPI Core):** عقل المنظومة المسؤول عن استقبال تنبيهات الـ Webhook وربط الأحداث المتتالية (Correlation) وتسجيل الطوابع الزمنية الدقيقة (`T0` حتى `T4`).
-4. **الطبقة 4 — الاستجابة المؤتمتة (Active Response & Forensics):** تشغيل متزامن لأخذ تفريغ الذاكرة للعملية وتجزئتها بـ `SHA-256` ثم تطبيق العزل الشبكي الكامل مع إبقاء الاتصال بخادم الإدارة فقط.
-5. **الطبقة 5 — طبقة التحليل الذكي والتحكم (Intelligence & Dashboards):** توليد التقرير العربي بواسطة Gemini API بعد الاحتواء، وعرض الخط الزمني للحادثة على لوحة تحكم تفاعلية مع إرسال إشعار فوري لمدير الأمن عبر Telegram.
-
----
-
-## 🔁 تسلسل الاستجابة الحتمي
-
-> [!IMPORTANT]
-> **القاعدة الذهبية لمنظومة صَقْر (The Golden Rule):**  
-> **"الاستجابة تُنفذ بقواعد حتمية + الذكاء الاصطناعي للتحليل بعد الاحتواء."**  
-> قرار عزل الجهاز وحفظ الأدلة لا ينتظر الـ LLM؛ ينفذ المحرك إجراءات الاستجابة وفق القواعد المحددة، بينما يتدخل الذكاء الاصطناعي **بعد انتهاء الاحتواء** للشرح والتوثيق.
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Attacker as محاكي الفدية - sim_ransom
-    participant Victim as نظام الضحية - Sysmon
-    participant Wazuh as خادم Wazuh Manager
-    participant Engine as محرك صقر - FastAPI
-    participant Actions as أدوات الاستجابة - SOAR
-    participant AI as Gemini API - التقرير فقط
-    participant SOC as لوحة التحكم و Telegram
-
-    Attacker->>Victim: [T0] بدء تشفير الملفات ومحاولة حذف الظل
-    Victim->>Wazuh: إرسال أحداث EventID 11 و EventID 1
-    Wazuh->>Engine: [T1] إطلاق تنبيه Webhook عند تطابق القاعدة 100201
-    Note over Engine: تسجيل نقطة اكتشاف النشاط (T1)
-    Engine->>Engine: [T2] مطابقة شروط الفدية المؤكدة (Deterministic Decision)
-    par تنفيذ إجراءات الاستجابة
-        Engine->>Actions: [T3] أخذ Process Dump وحساب هاش SHA-256
-        Engine->>Actions: [T4] عزل الجهاز شبكياً عبر Windows Firewall
-        Engine->>SOC: إرسال تنبيه Telegram فوري للـ CISO
-    end
-    Note over Engine: تسجيل اكتمال إجراء الاحتواء (T4)
-    Engine->>AI: إرسال ملخص الحادثة المجمّع بصيغة JSON
-    AI-->>Engine: تقرير أمني رسمي باللغة العربية ومطابقة MITRE ATT&CK
-    Engine->>SOC: تحديث لوحة Streamlit وعرض التقرير والأدلة
+    WA -->|"TCP 1514 Encrypted"| WM
+    WM -->|"custom-saqr.py HMAC (<200ms)"| API
+    API -->|"PUT /active-response (:55000)"| WM
+    WM -->|"TCP 1514 AR Push"| AR
+    AR -->|"Single-Use Token Dump + SHA-256 (:5000)"| API
+    API -->|"Post-T4 Async"| RED
+    API -->|"Instant Alert + Outbox"| TG
 ```
 
 ---
 
-## 🧠 Gemini API حصرياً للتقارير الذكية
+## 🔧 التحسينات الأمنية والمعمارية المدمجة
 
-اعتمدت الخطة الحالية **Gemini API فقط** لإنتاج التحليل والتقرير الأمني العربي. أُزيلت فكرة تشغيل نموذج محلي أو التبديل بين مزودين لتقليل استهلاك موارد الجهاز وتبسيط التنفيذ.
-
-### حدود صلاحيات الذكاء الاصطناعي
-
-- قرارات الكشف والارتباط وتحديد الخطورة والاحتواء تُنفذ بواسطة قواعد حتمية داخل SAQR.
-- يُستدعى Gemini API بعد اكتمال الاستجابة، ويستقبل ملخصاً منظماً ومحدوداً للحادثة.
-- يساهم Gemini في صياغة الملخص التنفيذي، والخط الزمني T0–T4، وشرح الأدلة، وربط المؤشرات بتقنيات MITRE ATT&CK، والتوصيات.
-- لا يقرر Gemini عزل الجهاز، ولا ينفذ أوامر، ولا يغير قواعد الكشف أو سياسات الاستجابة.
-
-### التعامل مع انقطاع الاتصال
-
-الكشف والاحتواء وجمع الأدلة تستمر محلياً ولا تنتظر الإنترنت. عند تعذر Gemini API، تحفظ حالة التقرير بوصفها معلقة أو فاشلة مع تسجيل سبب الخطأ، ثم تعاد المحاولة عند عودة الاتصال. وبالمثل، لا يؤخر فشل Telegram الاستجابة؛ تحفظ الرسائل غير المرسلة لإعادة المحاولة.
-
-**القيد المهم:** لا يمكن إنشاء تقرير Gemini جديد أثناء انقطاع الإنترنت. الاستمرار دون اتصال يشمل مسار الرصد والقرار والاستجابة المحلي، ولا يعني وجود نموذج AI محلي أو تقرير توليدي يعمل دون شبكة.
-
-### الإعداد
-
-المتغيرات المطلوبة هي مفتاح Gemini واسم نموذج متاح لحساب المشروع وقت التنفيذ. تحفظ المفاتيح في ملف محلي غير مرفوع إلى Git، ويوفر المستودع ملف إعداد نموذجي بقيم وهمية فقط.
+1. **إغلاق ثغرتي `CVE-2025-24016` و`CVE-2026-40106` وتقليص استهلاك RAM:** ترقية Wazuh من `v4.7.4` إلى **`v4.14.11`** ونقل `wazuh.indexer` و`wazuh.dashboard` إلى `--profile debug-ui` لتوفير **3–4GB RAM** على أجهزة 16GB.
+2. **منع امتلاء القرص وتسريب البيانات وفقدان التنبيهات:** إزالة `report_changes="yes"` وSysmon EID `23` (`FileDelete` archiving)، وتفعيل EID `26` + EID `3` (SMB) + EID `22` (DNS) + PowerShell EID `4104` (Rule `100207`) + استثناءات `AppData`/`Temp` + رفع `<client_buffer>` إلى `25000 / 1000 EPS` + حصر `FIM whodata` في `Desktop/Documents/Downloads` و`C:\SAQR-Test`.
+3. **إلغاء حالة السباق (Race Condition) وخطأ `Wrong-PID` في الاستجابة:** تنفيذ تسلسل حتمي داخل [`lab/vms/saqr_contain.py`](lab/vms/saqr_contain.py): **(1)** توجيه تنبيهات `vssadmin/wmic/wbadmin/bcdedit` إلى عملية الأب + قائمة عمليات محمية (`System`, `lsass.exe`, `svchost.exe`, `wazuh-agent.exe`, `Sysmon64.exe`) → **(2)** تجميد شجرة العمليات (`NtSuspendProcess`) → **(3)** عزل Windows Firewall مع إبقاء المنفذ `1514/1515` و`5000` وفصل SMB → **(4)** تفريغ الذاكرة (`MiniDumpWriteDump` / `procdump64.exe`) + `SHA-256` في خزنة `NT AUTHORITY\SYSTEM` ورفعه برمز استخدام لمرة واحدة → **(5)** إنهاء العملية + زر إلغاء العزل [`saqr_unquarantine.py`](lab/vms/saqr_unquarantine.py).
+4. **ربط فوري موثّق بـ HMAC-SHA256 (`<200ms`):** عبر [`detection/wazuh/integrations/custom-saqr.py`](detection/wazuh/integrations/custom-saqr.py) مع حماية Anti-Replay بدلاً من استعلام OpenSearch كل 60 ثانية.
+5. **إثبات عملي لـ `0` انتشار جانبي و`0%` إنذارات كاذبة:** حاوية [`samba-canary`](lab/vms/samba-canary/Dockerfile) خفيفة (`<64MB RAM`) تحوي 50 ملفاً موقّعاً بـ `SHA-256`، ومشغّل التجارب الـ 20 [`metrics/run_20_trials.py`](metrics/run_20_trials.py) الذي يختبر 20 هجمة + 20 نشاطاً سليماً.
 
 ---
 
-## 🧰 التقنيات المعتمدة (Tech Stack)
+## 🧠 طبقة التقارير العربية الذكية (Gemini API & Local Ollama)
 
-| الطبقة | التقنية | الاستخدام |
-|---|---|---|
-| Virtualization | VMware Workstation | تشغيل Windows 10 VM في شبكة معزولة |
-| Endpoint telemetry | Sysmon + Wazuh Agent | تسجيل أحداث النظام وإرسالها |
-| Detection | Wazuh Manager + Rules | تصنيف التنبيهات وتوليدها |
-| Runtime | Docker + WSL2 | تشغيل خدمات الخادم |
-| Backend | Python + FastAPI | استقبال التنبيهات والتنسيق |
-| Database | PostgreSQL | الحوادث والإجراءات والأدلة والتوقيتات |
-| SOAR | Python Playbooks | جمع الأدلة والعزل |
-| AI Reporting | Gemini API only | صياغة التقرير بعد الاحتواء |
-| Dashboard | Streamlit RTL | متابعة الحوادث والمقاييس والتقارير |
-| Notifications | Telegram Bot | التنبيه الفوري وإرسال التقارير |
-| Framework | MITRE ATT&CK | تصنيف التقنيات والسلوكيات |
+توفّر [`engine/app/services/llm.py`](engine/app/services/llm.py) التوافق الكامل مع **كلا** الخيارين بمتغير بيئة واحد (`LLM_PROVIDER`):
+- **`LLM_PROVIDER=gemini`:** استخدام **Gemini API** بعد تنقيح البيانات الحساسة إلزامياً في [`engine/app/services/redactor.py`](engine/app/services/redactor.py) وتغليف البيانات بوسم `<UNTRUSTED_TELEMETRY>` للحماية من Prompt Injection.
+- **`LLM_PROVIDER=ollama`:** تشغيل نموذج محلي 100% دون إنترنت (`Qwen2.5` عبر `--profile local-llm`) تحقيقاً للهدف #3 في مقترح التخرج الموقّع.
+- **`LLM_PROVIDER=offline` (أو عند انقطاع الإنترنت):** توليد تقرير عربي هيكلي فوري مع حفظ مهمة إعادة المحاولة في جدول `outbox_jobs` داخل PostgreSQL.
 
-## 🛡️ السيناريوهات الدفاعية المدعومة
+---
 
-| السيناريو | المحاكاة | الرصد والتحليل | الاستجابة |
+## 🛡️ السيناريوهات الدفاعية الثلاثة المدعومة
+
+| السيناريو | المحاكاة | القواعد والربط الحتمي | الاستجابة المؤتمتة |
 |---|---|---|---|
-| 🔴 **هجوم برامج الفدية** (Ransomware Outbreak), نجم المشروع في الفصل الأول | تشفير الملفات داخل الآلة التجريبية واستدعاء أدوات مثل `vssadmin` | مراقبة تغييرات الملفات وربط الأحداث المشبوهة عبر Sysmon وWazuh | جمع الأدلة، Process Dump، عزل الجهاز عبر جدار الحماية، وإعداد تقرير عربي |
-| 🟡 **التصيد الاحتيالي المستهدف** (Targeted Phishing), الفصل الثاني | محاكاة رسائل تصيد عبر GoPhish وصفحات دخول مشابهة للمواقع الأصلية | رصد الاتصال بالنطاق المشبوه وتحليل مؤشرات التصيد | حظر النطاق أو الرابط المشبوه، وإلغاء الجلسات وفق التكاملات المعتمدة |
-| 🟠 **حجب الخدمة الموزع** (DDoS Flooding), الفصل الثاني | محاكاة ضغط مروري على خادم ويب تجريبي داخل المختبر | تحليل حركة المرور والتمييز بين الهجوم والارتفاع الطبيعي في الاستخدام | تطبيق Rate Limiting وحظر عناوين IP المهاجمة وفق قواعد الاستجابة |
-
----
-
-## 🖥️ متطلبات البيئة والموارد المقترحة
-
-هذا القسم يحدد الموارد اللازمة لتجهيز مختبر SAQR. الأرقام أدناه **توزيع تخطيطي مبدئي** وليست نتائج قياس أداء نهائية. تُراجع بعد تشغيل المكونات واختبار استهلاكها الفعلي.
-
-### 1. جهاز التشغيل الرئيسي (Host)
-
-| المورد | الحد الأدنى للتجربة المحدودة | الموصى به لتشغيل المكونات معاً |
-|---|---:|---:|
-| نظام التشغيل | Windows 10/11 64-bit | Windows 10/11 64-bit محدث |
-| المعالج | 4 أنوية منطقية | 6 إلى 8 أنوية منطقية أو أكثر |
-| الذاكرة RAM | 16GB | 32GB |
-| مساحة SSD خالية | 100GB | 150GB أو أكثر |
-| الافتراضية | Intel VT-x أو AMD-V مفعلة من BIOS | Intel VT-x أو AMD-V مفعلة من BIOS |
-
-يحتاج الجهاز إلى VMware Workstation لتشغيل آلة الضحية، وإلى WSL2 وDocker Desktop لتشغيل خدمات الخادم والحاويات.
-
-### 2. آلة الضحية الافتراضية (Windows Victim VM)
-
-| المورد | التخصيص المقترح |
-|---|---:|
-| نظام التشغيل | Windows 10 64-bit |
-| RAM | 4GB، ويفضل 6GB عند توفر الذاكرة |
-| المعالج | 2 vCPU |
-| مساحة القرص | 60GB، قرص افتراضي ديناميكي |
-| الشبكة | VMware Host-only أو Custom VMnet معزولة |
-| الأدوات | Sysmon وWazuh Agent وأدوات سيناريوهات الاختبار |
-
-تُخصص هذه الآلة لمحاكاة الهجمات وجمع الأحداث فقط. لا تستخدم وضع Bridged Network في المختبر. يجب أن تسمح الشبكة المعزولة باتصال آلة الضحية بخادم Wazuh وخدمات الإدارة المطلوبة، مع منع وصول سيناريوهات الاختبار إلى الشبكة الحقيقية.
-
-### 3. بيئة Docker وWSL2
-
-تعمل خدمات Wazuh ومحرك FastAPI وقاعدة PostgreSQL ولوحة Streamlit ضمن بيئة Docker عبر WSL2.
-
-| المورد | التخصيص المبدئي |
-|---|---:|
-| RAM المخصصة لـ WSL2 | 6 إلى 8GB |
-| المعالجات | 4 vCPU |
-| Swap | 2 إلى 4GB |
-| مساحة Docker والبيانات | 40 إلى 60GB |
-| خدمات الحاويات | Wazuh Manager، FastAPI Engine، PostgreSQL، Streamlit Dashboard |
-
-توزيع الذاكرة داخل Docker يضبط بعد التحقق من إعدادات كل خدمة وقياس استهلاكها. يحتاج Wazuh إلى الحصة الأكبر، ثم قاعدة البيانات ومحرك FastAPI ولوحة التحكم. لا تعتبر هذه القيم حدوداً نهائية للحاويات قبل اختبار ملفات Compose الفعلية.
-
-### 4. توزيع الذاكرة على جهاز بسعة 16GB
-
-يمكن استخدام إعداد محدود للتطوير الأولي، مع تشغيل آلة الضحية والخدمات بالتتابع أو تقليل الموارد المخصصة لكل منها. تشغيل Windows المضيف وآلة الضحية وجميع خدمات Docker في الوقت نفسه قد يسبب ضغطاً على الذاكرة.
-
-| المكون | تخصيص مبدئي |
-|---|---:|
-| Windows Host والبرامج الأساسية | 5 إلى 6GB |
-| Windows Victim VM | 3 إلى 4GB |
-| WSL2 وDocker | 5 إلى 6GB |
-| هامش احتياطي | 1GB تقريباً |
-
-هذا توزيع تقريبي وقد يحتاج إلى تخفيض عدد الخدمات المتزامنة. يفضل جهاز بذاكرة 32GB لتشغيل المختبر كاملاً براحة أكبر.
-
-### 5. البرامج والمتطلبات المساندة
-
-- VMware Workstation لتشغيل آلة Windows الافتراضية.
-- WSL2 وDocker Desktop لتشغيل الحاويات.
-- Git لاستنساخ وإدارة ملفات المشروع.
-- اتصال إنترنت عند الحاجة إلى تنزيل الصور والحزم أو استخدام Gemini API وTelegram.
-- مفاتيح وإعدادات Gemini API وTelegram Bot عند تفعيل خدماتهما، وتحفظ محلياً ولا ترفع إلى المستودع.
-- مساحة تخزين كافية للاحتفاظ بلقطات الآلة الافتراضية وسجلات Wazuh وملفات الأدلة والتقارير.
-
-> **ملاحظة هندسية:** لم تُثبت بعد حدود الموارد النهائية لكل حاوية في ملف Docker Compose داخل المستودع. لذلك تعرض الجداول تقديرات تخطيطية لتجهيز المختبر، ويجب اعتماد التخصيص النهائي بعد اختبار التشغيل وقياس الاستهلاك.
-
----
-
-## 📊 بروتوكول التجارب الـ 20 والتقييم العلمي
-
-تُنفذ **20 تجربة قياسية** مع استعادة لقطة Windows 10 النظيفة قبل كل تشغيل. لا تُعرض النتائج قبل تنفيذ التجارب وجمعها فعلياً.
-
-| المقياس | طريقة التقييم والتوثيق |
-|---|---|
-| زمن الكشف MTTD | يسجل القياس الفعلي بعد كل تجربة |
-| زمن الاحتواء MTTC | يسجل القياس الفعلي بعد كل تجربة |
-| عدد الملفات المتأثرة قبل العزل | أقل ما يمكن | يسجل في كل تجربة |
-| انتشار النشاط خارج الآلة التجريبية | صفر أجهزة | يتحقق ويثبت عملياً |
-| نسبة الإنذارات الكاذبة | تقاس مع أنشطة سليمة | يملأ بعد التجارب |
-| جودة التقرير العربي | تقييم بشري/معياري | يملأ بعد التقييم |
-
-يجب حساب المتوسط والوسيط والانحراف المعياري والحدين الأدنى والأقصى، مع توثيق حالات الفشل والإنذارات الكاذبة. أرقام الأداء الواردة في الرسومات أو أمثلة لوحة التحكم هي قيم توضيحية وليست قياسات معتمدة.
+| 🔴 **برامج الفدية** (الفصل 1) | [`sim_ransom.py`](lab/attack-engine/ransomware-sim/sim_ransom.py) (`fast`, `shadowless`, `inplace`, `benign`) | قواعد `100200–100204`, `100207` (`T1486`, `T1490`, `T1021.002`) | تجميد → عزل Firewall → تفريغ ذاكرة `SHA-256` → إنهاء → تقرير عربي + Un-Quarantine |
+| 🟡 **التصيد المستهدف** (الفصل 2) | [`sim_phishing.py`](lab/attack-engine/phishing-sim/sim_phishing.py) | قاعدة `100205` + كشف IDN/Homoglyph وSPF/DKIM/DMARC (`T1566.002`, `T1078`) | حظر النطاق (DNS Sinkhole) + إبطال فوري لجلسة JWT (`401`) |
+| 🟠 **حجب الخدمة DDoS** (الفصل 2) | [`sim_ddos.py`](lab/attack-engine/ddos-sim/sim_ddos.py) (Botnet مقابل Flash Crowd) | قاعدة `100206` + تحليل إنتروبي `H(ip)` و`H(uri\|burst)` (`T1498`, `T1499`) | حظر عناوين IP المهاجمة (`403`) مع إبقاء الذروة الطبيعية (Flash Crowd) تعمل دون حظر (`200`) |
 
 ---
 
 ## 📁 هيكل المستودع (Monorepo)
 
-```
-saqr/
-├── README.md                       # الوثيقة التعريفية الرئيسية
-├── .gitignore                      # استثناء ملفات النظام والبيئات المؤقتة
+```text
+SAQR/
+├── README.md
+├── LICENSE
+├── .env.example
+├── .gitignore
+├── docs/
+│   ├── TEAM-HANDOFF-AND-DEFENSE-GUIDE.md   # دليل الفريق وأسئلة لجنة المناقشة
+│   ├── OWNERSHIP-AGREEMENT-DRAFT.md        # مسودة اتفاقية الملكية المشتركة
+│   └── brand/                              # الهوية البصرية والشعارات الرسمية
+├── files/                                  # المقترح المعتمد والعرض التعريفي
+│   ├── SAQR-Project-Explainer.pdf
+│   └── Proposal/Project_Proposal_SAQR (1).pdf
 ├── deploy/
-│   └── docker-compose.yml          # حاويات Wazuh, Engine, DB, Dashboard
-├── files/                          # الوثائق الرسمية والمقترحات المعتمدة
-│   ├── SAQR-Project-Explainer.pdf  # العرض التقديمي الأولي للمشروع
-│   └── Proposal/
-│       └── Project_Proposal_SAQR (1).pdf # وثيقة مقترح التخرج المعتمدة
-├── lab/                            # بيئة المختبر وسيناريوهات الهجوم
-│   ├── vms/                        # إعدادات وسكريبتات الآلات الافتراضية
-│   └── attack-engine/
-│       └── ransomware-sim/
-│           └── sim_ransom.py       # محاكي الفدية الآمن داخل بيئة الاختبار
-├── detection/                      # إعدادات الرصد وقواعد الكشف
-│   ├── sysmon/                     # تكوين Sysmon لمراقبة العمليات
-│   └── wazuh/rules/                # قواعد الكشف السلوكي الخاصة بصقر
-├── ai/\n│   └── gemini_client.py            # تكامل Gemini API حصرياً\n├── engine/                         # محرك القرار الحتمي (FastAPI Core)
-│   ├── app/
-│   │   ├── main.py                 # واجهات استقبال التنبيهات
-│   │   ├── correlator.py           # خوارزميات ربط الأحداث المتتالية
-│   │   └── services/
-│   │       ├── soar.py             # تنسيق العزل وتفريغ الذاكرة
-│   │       └── gemini.py           # عميل Gemini API للتقارير فقط
-├── dashboard/                      # لوحة التحكم التفاعلية (Streamlit RTL)
-└── metrics/                        # سكريبتات القياس وجداول الـ 20 تشغيلة
+│   ├── docker-compose.yml                  # Wazuh v4.14.11 + PostgreSQL 16 + FastAPI + Streamlit + Ollama/Canary
+│   ├── Dockerfile.engine
+│   ├── Dockerfile.dashboard
+│   └── wazuh/ossec.conf                    # إعدادات authd + integratord + أوامر Active Response
+├── detection/
+│   ├── sysmon/sysmonconfig-saqr.xml        # EID 1, 3, 11, 22, 26 (بلا EID 23 أو ضوضاء AppData)
+│   └── wazuh/
+│       ├── agent.conf                      # whodata + client_buffer 25000/1000 EPS (بلا report_changes)
+│       ├── rules/local_rules.xml           # قواعد 100200-100207 مع وسوم MITRE ATT&CK حتمية
+│       └── integrations/custom-saqr.py     # Webhook فوري موقّع بـ HMAC-SHA256
+├── engine/
+│   ├── db/schema.sql                       # مخطط PostgreSQL 16 مع قفل Idempotency ومنع التكرار
+│   └── app/
+│       ├── main.py                         # FastAPI Core (:5000)
+│       ├── correlator.py                   # محرك الربط الحتمي للسيناريوهات الثلاثة
+│       ├── database.py                     # PostgreSQL 16 (Docker) + SQLite WAL (للاختبار المحلي)
+│       └── services/                       # soar.py, redactor.py, llm.py, telegram.py
+├── dashboard/
+│   └── app.py                              # لوحة تحكم Streamlit RTL العربية (:8501) مع زر Un-Quarantine
+├── lab/
+│   ├── vms/                                # win10-setup.ps1, saqr_contain.py, saqr_unquarantine.py, samba-canary/
+│   └── attack-engine/                      # ransomware-sim/, phishing-sim/, ddos-sim/
+├── metrics/
+│   └── run_20_trials.py                    # مشغّل التجارب الـ 20 ومولّد جداول التقييم العلمي
+└── tests/
+    └── test_saqr_rework.py                 # اختبارات التكامل والأمان الشاملة (7/7)
+```
+
+---
+
+## 🚀 التشغيل السريع (Quickstart)
+
+### 1. تجهيز ملف المتغيرات وتشغيل الحاويات (WSL2 / Docker Desktop)
+```bash
+cp .env.example .env
+# عدّل القيم في .env (كلمات المرور + مفتاح Gemini أو Ollama)
+
+# التشغيل الخفيف الموصى به للعروض والتجارب (يوفر 3-4GB RAM على أجهزة 16GB):
+docker compose -f deploy/docker-compose.yml up -d --build
+
+# (اختياري) تشغيل Wazuh Dashboard أثناء تطوير القواعد فقط:
+docker compose -f deploy/docker-compose.yml --profile debug-ui up -d
+
+# (اختياري) تشغيل النموذج المحلي Ollama (Qwen2.5) لتلبية الهدف #3 دون إنترنت:
+docker compose -f deploy/docker-compose.yml --profile local-llm up -d
+docker exec saqr-ollama ollama pull qwen2.5:7b-instruct-q4_K_M
+
+# (اختياري) تشغيل Samba Canary لإثبات 0 انتشار جانبي عملياً:
+docker compose -f deploy/docker-compose.yml --profile canary up -d
+```
+
+### 2. إعداد آلة الضحية (`win10-vm` في VMware Workstation — Host-Only VMnet)
+1. ثبّت **Wazuh Agent v4.14.11** واربطه بالخادم.
+2. شغّل [`lab/vms/win10-setup.ps1`](lab/vms/win10-setup.ps1) بصلاحية Administrator لتطبيق `sysmonconfig-saqr.xml`، وتفعيل PowerShell EID `4104`، وتجهيز خزنة الأدلة `C:\ProgramData\SAQR\Vault` (صلاحية `SYSTEM` فقط)، وتثبيت `saqr-contain.cmd` و`saqr-unquarantine.cmd`، ومزامنة الوقت.
+
+### 3. التحقق والاختبارات الآلية والتجارب الـ 20
+```bash
+# تشغيل اختبارات النظام والأمان الكاملة محلياً بدون الحاجة لـ VMware:
+PYTHONPATH=engine:. python3 -m unittest discover -s tests -v
+
+# تشغيل بروتوكول التجارب الـ 20 (وضع المحاكاة السريعة أو وضع VMware):
+python3 metrics/run_20_trials.py --mode simulate
 ```
 
 ---
 
 ## 📄 وثائق المشروع والمرفقات
 
-كافة وثائق المشروع الهندسية متاحة داخل مجلد `files/`:
-
+* 📘 **[دليل الفريق ولجنة المناقشة (TEAM-HANDOFF-AND-DEFENSE-GUIDE.md)](docs/TEAM-HANDOFF-AND-DEFENSE-GUIDE.md):** شرح الإصلاحات الـ 7، توزيع أدوار الفريق الخمسة، وإجابات أسئلة لجنة المناقشة.
 * 📊 **[SAQR-Project-Explainer.pdf](files/SAQR-Project-Explainer.pdf):** العرض البصري التعريفي بالمنصة والقواعد الهندسية الذهبية.
-* 📝 **[Project_Proposal_SAQR.pdf](files/Proposal/Project_Proposal_SAQR%20(1).pdf):** المقترح الأكاديمي المبدئي لمشروع التخرج.
-* 🎨 **[Official Brand Assets](files/saqr-banner.png):** الهوية البصرية الرسمية للمنصة — [الشعار الكامل (Banner)](files/saqr-banner.png) | [أيقونة التطبيق (App Icon)](files/saqr-icon.png) | [رمز الشعار (Emblem)](files/saqr-logo.png).
-
----
-
-## 👥 فريق العمل والأدوار الهندسية
-
-مشروع تخرج لدرجة البكالوريوس في **هندسة الأمن السيبراني** — فريق مكون من 5 مهندسين:
-
-| المهندس / المسؤول | الدور الوظيفي | نطاق المسؤولية التقنية |
-| :--- | :--- | :--- |
-| **مهندس المعمل والمحاكاة** | Lab & Simulation Engineer | إعداد VMware Workstation و Windows 10 VM، وبرمجة محاكي الفدية، وإدارة اللقطات النظيفة. |
-| **مهندس الرصد واكتشاف التهديدات** | Detection Engineer | ضبط حاوية Wazuh Manager وتكوين Sysmon وصياغة قواعد Sigma لاصطياد الهجمات. |
-| **مهندس محرك القرار وقواعد البيانات** | Core Engine & DB Dev | بناء محرك FastAPI وخوارزميات Correlation وتسجيل مراحل الحادثة T0..T4 على PostgreSQL. |
-| **مهندس الاستجابة والذكاء الاصطناعي** | SOAR & AI Engineer | أتمتة سكريبتات العزل و Process Dump، وتكامل Gemini API للتقارير فقط بعد الاحتواء. |
-| **مسؤول لوحة التحكم والتقييم العلمي** | Dashboard & Evaluation Lead | تطوير لوحة Streamlit العربية، وبوت Telegram، وإدارة جلسات قياس الـ 20 تجربة. |
-
----
-
-
-
----
-
-## 🚀 سجل التنفيذ الفعلي (Implementation Log)
-
-### المرحلة 1: تجهيز بيئة الضحية والرصد (25 نوفمبر 2026) — مكتملة ✅
-تم تنفيذ وربط الطبقة الأولى والثانية من معمارية SAQR عملياً:
-- **خادم Wazuh (Docker `v4.7.4`)**: تشغيل حاويات `wazuh.manager` و`wazuh.indexer` و`wazuh.dashboard` مع ضبط بيانات الدخول إلى لوحة التحكم (`https://localhost`).
-- **ربط آلة الضحية (`win10-vm`)**: تثبيت **Wazuh Agent v4.7.4** على نظام `Windows 10 x64` في VMware Workstation (`192.168.126.141`) وربطه بـ Wazuh Manager عبر `192.168.126.1` (الحالة: **Active**، Agent ID `001`).
-- **تثبيت وتكوين Sysmon (`v15.22`)**: اعتماد ملف [sysmonconfig-saqr.xml](detection/sysmon/sysmonconfig-saqr.xml) لرصد الأحداث الأساسية والحرجة:
-  - `Event ID 1`: Process Creation (مع حساب هاش `SHA-256`).
-  - `Event ID 11`: File Create / Overwrite لمسارات `C:\Users` والامتدادات التنفيذية.
-  - `Event ID 23`: File Delete مع الأرشفة في `C:\SysmonArchive` (بصلاحيات `NT AUTHORITY\SYSTEM` فقط).
-  - `Event ID 26`: File Delete بدون أرشفة.
-- **تهيئة Wazuh Agent المركزية وFIM**: تحديث [agent.conf](detection/wazuh/agent.conf) لسحب قناة `Microsoft-Windows-Sysmon/Operational` وتفعيل مراقبة الملفات الفورية (**Wazuh FIM**) على مجلد المستخدمين `C:\Users`، مع التحقق من وصول تنبيهات Sysmon إلى `wazuh-alerts-*`.
-
----
-
-## 🧾 القرارات المعتمدة وتاريخ التحديث
-
-| العنصر | القرار الحالي |
-|---|---|
-| Virtualization | VMware Workstation بدلاً من Hyper-V |
-| AI | Gemini API فقط؛ لا Ollama أو Qwen أو نموذج محلي أو Hybrid Provider |
-| Notifications | Telegram Bot؛ لا Email أو SMTP في النطاق الحالي |
-| Response authority | المحرك الحتمي المحلي يقرر وينفذ العزل وجمع الأدلة؛ Gemini للتفسير والتقرير فقط |
-| Internet failure | تستمر الاستجابة المحلية؛ وتؤجل تقارير Gemini وإشعارات Telegram حتى عودة الاتصال |
-
-تم تحديث الخطة بتاريخ **9 نوفمبر 2026**. تعتمد تسمية المشروع SAQR على **Security Automated Quick Response**.
+* 📝 **[Project_Proposal_SAQR.pdf](files/Proposal/Project_Proposal_SAQR%20(1).pdf):** المقترح الأكاديمي المعتمد لمشروع التخرج.
+* 🎨 **[Official Brand Assets](files/saqr-banner.png):** الهوية البصرية الرسمية للمنصة — [الشعار الكامل](files/saqr-banner.png) | [أيقونة التطبيق](files/saqr-icon.png) | [رمز الشعار](files/saqr-logo.png).
 
 ---
 

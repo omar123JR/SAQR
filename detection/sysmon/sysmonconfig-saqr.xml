@@ -1,35 +1,160 @@
+<!--
+  SAQR Hardened Sysmon Configuration (Schema 4.90)
+  ================================================
+  Target OS: Windows 10/11 Victim VM (win10-vm)
+  Design Goals:
+    1. High-signal telemetry for all 3 SAQR scenarios (Ransomware, Phishing, Lateral SMB)
+    2. Low-noise exclusions so the Wazuh client buffer never drops events under load
+    3. Security & stability fixes:
+       - <CheckRevocation/> is intentionally omitted to prevent CRL network stalls
+         inside an isolated Host-Only lab VM.
+       - <DnsLookup>False</DnsLookup> prevents reverse-DNS latency on network events.
+       - Event ID 23 (FileDelete) is intentionally DISABLED because Sysmon archives
+         every deleted file to C:\Sysmon\, which ransomware can abuse as a disk bomb.
+         We use Event ID 26 (FileDeleteDetected) instead: full audit visibility, 0 disk bloat.
+-->
 <Sysmon schemaversion="4.90">
   <HashAlgorithms>sha256</HashAlgorithms>
-  <ArchiveDirectory>SysmonArchive</ArchiveDirectory>
+  <DnsLookup>False</DnsLookup>
+
   <EventFiltering>
-    <!-- Event ID 1: Process Creation -->
-    <RuleGroup name="" groupRelation="or">
-      <ProcessCreate onmatch="exclude" />
+    <!-- ====================================================================
+         Event ID 1: Process Creation (Default-Include, Exclude Noisy OS/Agent)
+         Captures ransomware launchers, PowerShell, Python, vssadmin, wmic,
+         wbadmin, bcdedit, and all suspicious child processes.
+         ==================================================================== -->
+    <RuleGroup name="SAQR-ProcessCreate-Exclude" groupRelation="or">
+      <ProcessCreate onmatch="exclude">
+        <!-- Prevent telemetry feedback loops from Wazuh/Sysmon themselves -->
+        <Image condition="is">C:\Program Files (x86)\ossec-agent\wazuh-agent.exe</Image>
+        <Image condition="is">C:\Windows\Sysmon64.exe</Image>
+        <Image condition="is">C:\Windows\Sysmon.exe</Image>
+        <!-- Routine Windows UI/indexing/servicing noise -->
+        <Image condition="is">C:\Windows\System32\conhost.exe</Image>
+        <Image condition="is">C:\Windows\System32\SearchProtocolHost.exe</Image>
+        <Image condition="is">C:\Windows\System32\SearchFilterHost.exe</Image>
+        <Image condition="is">C:\Windows\System32\backgroundTaskHost.exe</Image>
+        <Image condition="is">C:\Windows\System32\RuntimeBroker.exe</Image>
+        <Image condition="is">C:\Windows\System32\audiodg.exe</Image>
+        <Image condition="is">C:\Windows\System32\WerFault.exe</Image>
+        <Image condition="is">C:\Windows\System32\sppsvc.exe</Image>
+        <Image condition="is">C:\Windows\servicing\TrustedInstaller.exe</Image>
+        <Image condition="begin with">C:\ProgramData\Microsoft\Windows Defender\</Image>
+        <Image condition="begin with">C:\Program Files\Windows Defender\</Image>
+      </ProcessCreate>
     </RuleGroup>
 
-    <!-- Event ID 11: File Create / Overwrite -->
-    <RuleGroup name="" groupRelation="or">
+    <!-- ====================================================================
+         Event ID 3: Network Connection (SMB 445/139, RDP 3389, HTTP/S 80/443)
+         Detects ransomware SMB lateral movement to the Samba canary share
+         and suspicious outbound HTTP/HTTPS callbacks.
+         ==================================================================== -->
+    <RuleGroup name="SAQR-NetworkConnect-Include" groupRelation="or">
+      <NetworkConnect onmatch="include">
+        <DestinationPort condition="is">445</DestinationPort>
+        <DestinationPort condition="is">139</DestinationPort>
+        <DestinationPort condition="is">3389</DestinationPort>
+        <DestinationPort condition="is">80</DestinationPort>
+        <DestinationPort condition="is">443</DestinationPort>
+      </NetworkConnect>
+    </RuleGroup>
+
+    <RuleGroup name="SAQR-NetworkConnect-Exclude" groupRelation="or">
+      <NetworkConnect onmatch="exclude">
+        <Image condition="is">C:\Program Files (x86)\ossec-agent\wazuh-agent.exe</Image>
+        <Image condition="begin with">C:\ProgramData\Microsoft\Windows Defender\</Image>
+        <Image condition="begin with">C:\Program Files\Windows Defender\</Image>
+      </NetworkConnect>
+    </RuleGroup>
+
+    <!-- ====================================================================
+         Event ID 11: File Creation (Protected User Folders + Executable Drops)
+         Monitors C:\Users\ and C:\SAQR-Test\ for ransomware encryption bursts,
+         plus executable/script drops anywhere on disk.
+         ==================================================================== -->
+    <RuleGroup name="SAQR-FileCreate-Include" groupRelation="or">
       <FileCreate onmatch="include">
-        <TargetFilename condition="begin with">C:\Users</TargetFilename>
+        <TargetFilename condition="begin with">C:\Users\</TargetFilename>
+        <TargetFilename condition="begin with">C:\SAQR-Test\</TargetFilename>
         <TargetFilename condition="end with">.exe</TargetFilename>
-        <TargetFilename condition="end with">.ps1</TargetFilename>
-        <TargetFilename condition="end with">.bat</TargetFilename>
-        <TargetFilename condition="end with">.vbs</TargetFilename>
         <TargetFilename condition="end with">.dll</TargetFilename>
+        <TargetFilename condition="end with">.ps1</TargetFilename>
+        <TargetFilename condition="end with">.py</TargetFilename>
+        <TargetFilename condition="end with">.bat</TargetFilename>
+        <TargetFilename condition="end with">.cmd</TargetFilename>
+        <TargetFilename condition="end with">.vbs</TargetFilename>
+        <TargetFilename condition="end with">.js</TargetFilename>
+        <TargetFilename condition="end with">.hta</TargetFilename>
+        <TargetFilename condition="end with">.lnk</TargetFilename>
+        <TargetFilename condition="end with">.msi</TargetFilename>
       </FileCreate>
     </RuleGroup>
 
-    <!-- Event ID 23: File Delete (with archive) -->
-    <RuleGroup name="" groupRelation="or">
-      <FileDelete onmatch="include">
-        <TargetFilename condition="begin with">C:\Users</TargetFilename>
-      </FileDelete>
+    <RuleGroup name="SAQR-FileCreate-Exclude" groupRelation="or">
+      <FileCreate onmatch="exclude">
+        <!-- Exclude high-churn AppData, Temp, and browser caches -->
+        <TargetFilename condition="contains">\AppData\Local\Temp\</TargetFilename>
+        <TargetFilename condition="contains">\AppData\Local\Microsoft\Edge\</TargetFilename>
+        <TargetFilename condition="contains">\AppData\Local\Google\Chrome\</TargetFilename>
+        <TargetFilename condition="contains">\AppData\Local\Mozilla\Firefox\</TargetFilename>
+        <TargetFilename condition="contains">\AppData\Local\Packages\</TargetFilename>
+        <TargetFilename condition="contains">\AppData\Local\Microsoft\Windows\INetCache\</TargetFilename>
+        <TargetFilename condition="contains">\AppData\Local\Microsoft\Windows\Explorer\</TargetFilename>
+        <TargetFilename condition="contains">\AppData\Roaming\Microsoft\Windows\Recent\</TargetFilename>
+        <TargetFilename condition="begin with">C:\Windows\Temp\</TargetFilename>
+        <!-- Never trigger recursive alerts on SAQR forensic dumps or Wazuh queue -->
+        <TargetFilename condition="begin with">C:\ProgramData\SAQR\Vault\</TargetFilename>
+        <TargetFilename condition="begin with">C:\Program Files (x86)\ossec-agent\</TargetFilename>
+      </FileCreate>
     </RuleGroup>
 
-    <!-- Event ID 26: File Delete (without archive) -->
-    <RuleGroup name="" groupRelation="or">
+    <!-- ====================================================================
+         Event ID 22: DNS Query (Scenario 2: Phishing & Homoglyph Detection)
+         Captures IDN punycode and lookalike brand domains while filtering
+         routine Windows background discovery traffic.
+         ==================================================================== -->
+    <RuleGroup name="SAQR-DnsQuery-Exclude" groupRelation="or">
+      <DnsQuery onmatch="exclude">
+        <QueryName condition="end with">.arpa</QueryName>
+        <QueryName condition="end with">.local</QueryName>
+        <QueryName condition="is">localhost</QueryName>
+        <QueryName condition="is">wpad</QueryName>
+        <QueryName condition="end with">.microsoft.com</QueryName>
+        <QueryName condition="end with">.windowsupdate.com</QueryName>
+        <QueryName condition="end with">.msftconnecttest.com</QueryName>
+        <QueryName condition="end with">.digicert.com</QueryName>
+        <QueryName condition="begin with">ocsp.</QueryName>
+      </DnsQuery>
+    </RuleGroup>
+
+    <!-- ====================================================================
+         Event ID 23: FileDelete (EXPLICITLY DISABLED — Prevents Disk Bomb)
+         An empty include filter turns off EID 23 file archiving completely.
+         ==================================================================== -->
+    <RuleGroup name="SAQR-FileDelete-Disabled" groupRelation="or">
+      <FileDelete onmatch="include" />
+    </RuleGroup>
+
+    <!-- ====================================================================
+         Event ID 26: FileDeleteDetected (Logs Deletes Without Archiving)
+         Catches ransomware deleting original plaintext files after encryption
+         without filling the victim disk.
+         ==================================================================== -->
+    <RuleGroup name="SAQR-FileDeleteDetected-Include" groupRelation="or">
       <FileDeleteDetected onmatch="include">
-        <TargetFilename condition="begin with">C:\Users</TargetFilename>
+        <TargetFilename condition="begin with">C:\Users\</TargetFilename>
+        <TargetFilename condition="begin with">C:\SAQR-Test\</TargetFilename>
+      </FileDeleteDetected>
+    </RuleGroup>
+
+    <RuleGroup name="SAQR-FileDeleteDetected-Exclude" groupRelation="or">
+      <FileDeleteDetected onmatch="exclude">
+        <TargetFilename condition="contains">\AppData\Local\Temp\</TargetFilename>
+        <TargetFilename condition="contains">\AppData\Local\Microsoft\Edge\</TargetFilename>
+        <TargetFilename condition="contains">\AppData\Local\Google\Chrome\</TargetFilename>
+        <TargetFilename condition="contains">\AppData\Local\Mozilla\Firefox\</TargetFilename>
+        <TargetFilename condition="begin with">C:\ProgramData\SAQR\Vault\</TargetFilename>
+        <TargetFilename condition="begin with">C:\Program Files (x86)\ossec-agent\</TargetFilename>
       </FileDeleteDetected>
     </RuleGroup>
   </EventFiltering>
